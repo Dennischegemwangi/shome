@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shome Meme App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header" id="appHeader">
+            <div class="logo-container">
+                <h1 class="shome-logo" id="logo">
+                    <span class="s">S</span>
+                    <span class="h">H</span>
+                    <span class="o">O</span>
+                    <span class="m">M</span>
+                    <span class="e">E</span>
+                </h1>
+            </div>
+        </header>
+
+        <!-- Meme Editor Modal -->
+        <div class="meme-editor-modal" id="memeEditorModal">
+            <div class="meme-editor-container">
+                <div class="editor-header">
+                    <h2>Create Your Meme</h2>
+                    <button class="close-editor" id="closeEditor">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="editor-tabs">
+                    <button class="editor-tab active" data-editor="image">Image Meme</button>
+                    <button class="editor-tab" data-editor="video">Video Editor</button>
+                    <button class="editor-tab" data-editor="gif">GIF Creator</button>
+                </div>
+
+                <div class="editor-main">
+                    <!-- Canvas Area -->
+                    <div class="canvas-container">
+                        <canvas id="memeCanvas" width="800" height="600"></canvas>
+
+                        <!-- Video Editor -->
+                        <div class="video-editor-container" id="videoEditorContainer">
+                            <div class="video-player">
+                                <video id="videoPlayer" controls>
+                                    <source src="" type="video/mp4">
+                                </video>
+                                <div class="video-trim-overlay">
+                                    <div class="trim-start"></div>
+                                    <div class="trim-end"></div>
+                                </div>
+                            </div>
+                            <div class="video-controls">
+                                <div class="trim-controls">
+                                    <div class="trim-input">
+                                        <label>Start: <span id="trimStartValue">0s</span></label>
+                                        <input type="range" id="trimStart" min="0" max="100" value="0">
+                                    </div>
+                                    <div class="trim-input">
+                                        <label>End: <span id="trimEndValue">10s</span></label>
+                                        <input type="range" id="trimEnd" min="0" max="100" value="100">
+                                    </div>
+                                </div>
+                                <button id="applyTrim" class="action-btn secondary">
+                                    <i class="fas fa-cut"></i> Apply Trim
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- GIF Creator -->
+                        <div class="gif-creator-container" id="gifCreatorContainer">
+                            <div class="gif-preview">
+                                <div id="gifFrames"></div>
+                                <div class="gif-info">
+                                    <span id="gifFrameCount">0 frames</span>
+                                    <span id="gifDuration">0s</span>
+                                </div>
+                            </div>
+                            <div class="gif-controls">
+                                <div class="gif-setting">
+                                    <label>FPS: <span id="gifFPSValue">10</span></label>
+                                    <input type="range" id="gifFPS" min="5" max="30" value="10">
+                                </div>
+                                <div class="gif-setting">
+                                    <label>Duration: <span id="gifDurationValue">3s</span></label>
+                                    <input type="range" id="gifDurationSlider" min="1" max="10" value="3">
+                                </div>
+                                <button id="generateGIF" class="action-btn primary">
+                                    <i class="fas fa-play-circle"></i> Create GIF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Controls Area -->
+                    <div class="controls-container">
+                        <!-- Image Controls -->
+                        <div class="controls-section active" id="imageControls">
+                            <div class="tool-section">
+                                <h3><i class="fas fa-image"></i> Image</h3>
+                                <div class="tool-options">
+                                    <button class="tool-btn" id="uploadImageBtn">
+                                        <i class="fas fa-upload"></i> Upload Image
+                                    </button>
+                                    <input type="file" id="imageUpload" accept="image/*" hidden>
+                                    <button class="tool-btn" id="useTemplateBtn">
+                                        <i class="fas fa-layer-group"></i> Use Template
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="tool-section">
+                                <h3><i class="fas fa-font"></i> Advanced Text</h3>
+                                <div class="text-controls">
+                                    <div class="text-input-group">
+                                        <input type="text" id="topText" placeholder="Top text..." class="text-input">
+                                        <input type="text" id="bottomText" placeholder="Bottom text..." class="text-input">
+                                    </div>
+
+                                    <div class="advanced-text-styles">
+                                        <div class="style-row">
+                                            <div class="font-selector">
+                                                <select id="fontSelect" class="select-control">
+                                                    <option value="Impact">Impact</option>
+                                                    <option value="Arial Black">Arial Black</option>
+                                                    <option value="Comic Sans MS">Comic Sans</option>
+                                                    <option value="Verdana">Verdana</option>
+                                                </select>
+                                            </div>
+                                            <div class="text-style-buttons">
+                                                <button class="style-btn" data-style="bold" title="Bold">
+                                                    <i class="fas fa-bold"></i>
+                                                </button>
+                                                <button class="style-btn" data-style="italic" title="Italic">
+                                                    <i class="fas fa-italic"></i>
+                                                </button>
+                                                <button class="style-btn" data-style="underline" title="Underline">
+                                                    <i class="fas fa-underline"></i>
+                                                </button>
+                                                <button class="style-btn" data-style="outline" title="Outline">
+                                                    <i class="fas fa-text-height"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="color-controls">
+                                            <div class="color-picker">
+                                                <button class="color-option white active" data-color="white"></button>
+                                                <button class="color-option black" data-color="black"></button>
+                                                <button class="color-option yellow" data-color="yellow"></button>
+                                                <button class="color-option red" data-color="red"></button>
+                                                <button class="color-option blue" data-color="blue"></button>
+                                                <input type="color" id="customColor" hidden>
+                                                <button class="color-option custom" id="customColorBtn">
+                                                    <i class="fas fa-palette"></i>
+                                                </button>
+                                            </div>
+                                            <div class="stroke-control">
+                                                <label>Stroke:</label>
+                                                <input type="range" id="strokeWidth" min="0" max="10" value="2">
+                                                <span id="strokeValue">2px</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-effects">
+                                            <div class="size-control">
+                                                <button class="size-btn" data-size="-">A-</button>
+                                                <span class="size-value">48px</span>
+                                                <button class="size-btn" data-size="+">A+</button>
+                                            </div>
+                                            <div class="shadow-control">
+                                                <label>Shadow:</label>
+                                                <input type="range" id="shadowBlur" min="0" max="20" value="0">
+                                                <span id="shadowValue">0px</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tool-section">
+                                <h3><i class="fas fa-sticky-note"></i> Stickers</h3>
+                                <div class="sticker-library">
+                                    <div class="sticker-categories">
+                                        <button class="sticker-category active" data-category="emoji">Emoji</button>
+                                        <button class="sticker-category" data-category="memes">Memes</button>
+                                        <button class="sticker-category" data-category="symbols">Symbols</button>
+                                    </div>
+                                    <div class="sticker-grid" id="stickerGrid">
+                                        <!-- Stickers loaded here -->
+                                    </div>
+                                    <button class="tool-btn small" id="uploadStickerBtn">
+                                        <i class="fas fa-plus"></i> Add Custom Sticker
+                                    </button>
+                                    <input type="file" id="stickerUpload" accept="image/*" hidden>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Video Controls -->
+                        <div class="controls-section" id="videoControls">
+                            <div class="tool-section">
+                                <h3><i class="fas fa-video"></i> Video Settings</h3>
+                                <div class="video-settings">
+                                    <button class="tool-btn" id="uploadVideoBtn">
+                                        <i class="fas fa-upload"></i> Upload Video
+                                    </button>
+                                    <input type="file" id="videoUpload" accept="video/*" hidden>
+
+                                    <div class="video-text-overlay">
+                                        <h4>Text Overlay</h4>
+                                        <input type="text" id="videoText" placeholder="Text to overlay..." class="text-input">
+                                        <div class="text-timing">
+                                            <div class="timing-input">
+                                                <label>Start Time (s):</label>
+                                                <input type="number" id="textStartTime" min="0" value="0" step="0.1">
+                                            </div>
+                                            <div class="timing-input">
+                                                <label>Duration (s):</label>
+                                                <input type="number" id="textDuration" min="0.5" value="3" step="0.1">
+                                            </div>
+                                        </div>
+                                        <button id="addVideoText" class="tool-btn small">
+                                            <i class="fas fa-plus"></i> Add Text
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GIF Controls -->
+                        <div class="controls-section" id="gifControls">
+                            <div class="tool-section">
+                                <h3><i class="fas fa-film"></i> GIF Settings</h3>
+                                <div class="gif-settings">
+                                    <button class="tool-btn" id="uploadGIFSourceBtn">
+                                        <i class="fas fa-upload"></i> Upload Video/Images
+                                    </button>
+                                    <input type="file" id="gifSourceUpload" accept="video/*,image/*" multiple hidden>
+
+                                    <div class="gif-options">
+                                        <div class="gif-option">
+                                            <label>Loop: <input type="checkbox" id="gifLoop" checked></label>
+                                        </div>
+                                        <div class="gif-option">
+                                            <label>Quality: <span id="gifQualityValue">Medium</span></label>
+                                            <input type="range" id="gifQuality" min="1" max="10" value="5">
+                                        </div>
+                                    </div>
+
+                                    <div class="gif-text-overlay">
+                                        <h4>Add Text to GIF</h4>
+                                        <input type="text" id="gifText" placeholder="Text for GIF..." class="text-input">
+                                        <button id="addGIFText" class="tool-btn small">
+                                            <i class="fas fa-plus"></i> Add Text
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filters Section -->
+                        <div class="tool-section">
+                            <h3><i class="fas fa-palette"></i> Filters</h3>
+                            <div class="filter-grid">
+                                <button class="filter-btn" data-filter="none">None</button>
+                                <button class="filter-btn" data-filter="grayscale">Grayscale</button>
+                                <button class="filter-btn" data-filter="sepia">Sepia</button>
+                                <button class="filter-btn" data-filter="invert">Invert</button>
+                                <button class="filter-btn" data-filter="brightness">Bright</button>
+                                <button class="filter-btn" data-filter="contrast">Contrast</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editor Footer -->
+                <div class="editor-footer">
+                    <div class="footer-left">
+                        <button class="action-btn secondary" id="resetMeme">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                        <button class="action-btn secondary" id="saveToCloudBtn">
+                            <i class="fas fa-cloud-upload-alt"></i> Save to Cloud
+                        </button>
+                    </div>
+
+                    <div class="footer-right">
+                        <button class="action-btn" id="saveMeme">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                        <button class="action-btn primary" id="shareMemeBtn">
+                            <i class="fas fa-share"></i> Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Modal -->
+        <div class="template-modal" id="templateModal">
+            <div class="template-container">
+                <div class="template-header">
+                    <h2>Choose a Template</h2>
+                    <button class="close-template" id="closeTemplate">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="template-grid" id="templateGrid">
+                    <!-- Templates loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Cloud Modal -->
+        <div class="cloud-modal" id="cloudModal">
+            <div class="cloud-container">
+                <div class="cloud-header">
+                    <h2><i class="fas fa-cloud"></i> Cloud Storage</h2>
+                    <button class="close-cloud" id="closeCloud">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="cloud-content">
+                    <div class="cloud-stats">
+                        <div class="cloud-stat">
+                            <i class="fas fa-save"></i>
+                            <span>Saved: <strong id="cloudCount">0</strong></span>
+                        </div>
+                        <div class="cloud-stat">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Last: <strong id="cloudLast">Never</strong></span>
+                        </div>
+                    </div>
+                    <div class="cloud-grid" id="cloudGrid">
+                        <!-- Cloud saves loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content Areas -->
+        <div class="tab-content active" id="feed">
+            <div class="meme-feed-container" id="memeFeed">
+                <div class="pull-to-refresh" id="pullToRefresh">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>Pull to refresh</span>
+                </div>
+                <div id="loading-sentinel">
+                    <div class="loading-spinner"></div>
+                    <p>Loading more content...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="shorts">
+            <div class="shorts-feed-container">
+                <div class="shorts-container" id="shortsContainer">
+                    <!-- Short videos loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Tab -->
+        <div class="tab-content" id="create">
+            <div class="create-tab">
+                <h1 class="create-title">Create Content</h1>
+                <p class="create-subtitle">Make memes, edit videos, create GIFs</p>
+
+                <!-- Quick Create Options -->
+                <div class="quick-create-options">
+                    <div class="quick-option" id="quickUpload">
+                        <div class="quick-icon">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                        <h3>Upload Image</h3>
+                        <p>Create memes</p>
+                    </div>
+
+                    <div class="quick-option" id="quickVideo">
+                        <div class="quick-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h3>Upload Video</h3>
+                        <p>Trim & add text</p>
+                    </div>
+
+                    <div class="quick-option" id="quickGIF">
+                        <div class="quick-icon">
+                            <i class="fas fa-film"></i>
+                        </div>
+                        <h3>Create GIF</h3>
+                        <p>From video/images</p>
+                    </div>
+
+                    <div class="quick-option" id="quickTemplateCreate">
+                        <div class="quick-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <h3>Use Template</h3>
+                        <p>Popular formats</p>
+                    </div>
+
+                    <div class="quick-option" id="quickCloudAccess">
+                        <div class="quick-icon">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <h3>Cloud Saves</h3>
+                        <p>Load your creations</p>
+                    </div>
+
+                    <div class="quick-option" id="quickBlank">
+                        <div class="quick-icon">
+                            <i class="fas fa-square"></i>
+                        </div>
+                        <h3>Blank Canvas</h3>
+                        <p>Start from scratch</p>
+                    </div>
+                </div>
+
+                <!-- Recent Creations -->
+                <div class="recent-creations">
+                    <h3>Recent Creations</h3>
+                    <div class="recent-grid" id="recentMemes">
+                        <!-- Recent memes loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Tab -->
+        <div class="tab-content" id="profile">
+            <div class="profile-tab">
+                <div class="profile-header">
+                    <div class="profile-avatar">J</div>
+                    <div class="profile-info">
+                        <h2>John Doe</h2>
+                        <p>@johndoe_memer</p>
+                        <p>Content creator since 2023</p>
+                    </div>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="stat">
+                        <span class="stat-value">247</span>
+                        <span class="stat-label">Memes</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">12.5K</span>
+                        <span class="stat-label">Upvotes</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">1.2K</span>
+                        <span class="stat-label">Followers</span>
+                    </div>
+                </div>
+
+                <div class="profile-tabs">
+                    <div class="profile-tab-btn active" data-profile-content="memes">Memes</div>
+                    <div class="profile-tab-btn" data-profile-content="shorts">Shorts</div>
+                    <div class="profile-tab-btn" data-profile-content="liked">Liked</div>
+                </div>
+
+                <div class="profile-content active" id="profileMemes">
+                    <!-- Memes loaded here -->
+                </div>
+
+                <div class="profile-content" id="profileShorts">
+                    <!-- Shorts loaded here -->
+                </div>
+
+                <div class="profile-content" id="profileLiked">
+                    <!-- Liked content loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" data-tab="feed">
+                <i class="fas fa-home"></i>
+                <span>Feed</span>
+            </div>
+            <div class="nav-item" data-tab="shorts">
+                <i class="fas fa-play-circle"></i>
+                <span>Shorts</span>
+            </div>
+
+            <div class="create-nav-btn" id="createNavBtn">
+                <i class="fas fa-plus"></i>
+            </div>
+
+            <div class="nav-item" data-tab="create">
+                <i class="fas fa-edit"></i>
+                <span>Create</span>
+            </div>
+            <div class="nav-item" data-tab="profile">
+                <i class="fas fa-user-circle"></i>
+                <span>Profile</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
